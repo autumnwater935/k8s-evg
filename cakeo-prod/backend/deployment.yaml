@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-prod
+  namespace: football-live68-prod
+  labels:
+    app: backend-prod
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0          # Không để downtime
+      maxSurge: 1                # Deploy thêm 1 pod mới trước khi xóa pod cũ
+  minReadySeconds: 10             # Pod phải ready ít nhất 10s mới coi là ổn định    
+  selector:
+    matchLabels:
+      app: backend-prod
+  template:
+    metadata:
+      labels:
+        app: backend-prod
+    spec:
+      terminationGracePeriodSeconds: 30  # Cho pod cũ thời gian tắt dần 
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: "node-role.kubernetes.io/worker"
+                    operator: In
+                    values:
+                      - "true"
+      containers:
+      - name: backend-prod
+        image: reg.netspace.vn/football-live68/backend:prod-latest
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8080
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "200Mi"
+          limits:
+            cpu: "500m"
+            memory: "1024Mi"            
+        envFrom:
+          - configMapRef:
+              name: backend-prod-config    
+
+        readinessProbe:
+          httpGet:
+            # path: /health
+            path: /
+            port: 8080
+          initialDelaySeconds: 5    # Tăng delay để chắc chắn app đã sẵn sàng
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 5
+          successThreshold: 2
+
+        livenessProbe:
+          httpGet:
+            # path: /health
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+      imagePullSecrets:
+        - name: auth-git
