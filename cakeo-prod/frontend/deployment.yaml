@@ -50,8 +50,8 @@ spec:
 
         readinessProbe:
           httpGet:
-            path: /health
-            # path: /
+            # path: /health
+            path: /
             port: 3000
           initialDelaySeconds: 5    # Tăng delay để chắc chắn app đã sẵn sàng
           periodSeconds: 5
@@ -61,8 +61,8 @@ spec:
 
         livenessProbe:
           httpGet:
-            path: /health
-            # path: /
+            # path: /health
+            path: /
             port: 3000
           initialDelaySeconds: 10
           periodSeconds: 5
