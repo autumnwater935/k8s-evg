@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-prod-config
+  namespace: football-live68-prod
+data:
+  NEXT_PUBLIC_MODE: "prod"
+  NEXT_PUBLIC_API_BASE_URL: "https://api.cakeo.live"

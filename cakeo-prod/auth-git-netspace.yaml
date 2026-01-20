@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: auth-git
+  namespace: football-live68-prod
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJyZWcubmV0c3BhY2Uudm4iOnsidXNlcm5hbWUiOiJkZXZvcHMiLCJwYXNzd29yZCI6IlF3ZXJ0ITIzNDUiLCJlbWFpbCI6ImRldm9wc0BuZXRzcGFjZS52biIsImF1dGgiOiJaR1YyYjNCek9sRjNaWEowSVRJek5EVT0ifX19
